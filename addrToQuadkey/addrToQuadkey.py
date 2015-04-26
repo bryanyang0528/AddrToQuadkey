@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
 import quadkey 
 from geocodequery import GeocodeQuery
 
@@ -47,10 +48,10 @@ class AddrToQuadkey:
 		return newDf
 
 
-	def toQuadkey_(self, export, sep = ',', level = 15):
+	def toQuadkey_(self, input, export, sep = ',', level = 15):
 		toFile = open(export,'w')
 
-		with open(self.input) as f:
+		with open(input) as f:
 			lines = f.readlines()
 
 			for line in lines:
@@ -63,3 +64,11 @@ class AddrToQuadkey:
 				qk = quadkey.from_geo((lat, lng), level)
 				toFile.write(name + "," + addr + "," + str(lat) + "," + str(lng) + "," + str(qk) + "\n")
 		toFile.close()
+
+if __name__ == '__main__':
+	if (len(sys.argv) != 3):
+		print 'usage: addrToQuadkey.py [sourceFile] [targetFile]'
+		sys.exit(1)
+	aq = AddrToQuadkey()
+	aq.toQuadkey_(sys.argv[1], sys.argv[2])
+
