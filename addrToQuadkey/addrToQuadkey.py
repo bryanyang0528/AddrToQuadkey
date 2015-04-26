@@ -55,14 +55,14 @@ class AddrToQuadkey:
 			lines = f.readlines()
 
 			for line in lines:
-				name = line.split(sep)[0]
-				addr = line.split(sep)[1]
+				name = line.split(sep)[0].strip()
+				addr = line.split(sep)[1].strip()
 				gq = GeocodeQuery("zh-tw", "tw")
 				gq.get_geocode(addr)
 				lat = gq.get_lat()
 				lng = gq.get_lng()
 				qk = quadkey.from_geo((lat, lng), level)
-				toFile.write(name + "," + addr + "," + str(lat) + "," + str(lng) + "," + str(qk) + "\n")
+				toFile.write(name + "," + addr + "," + str(lat) + "," + str(lng) + "," + str(qk.key) + '\n')
 		toFile.close()
 
 if __name__ == '__main__':
