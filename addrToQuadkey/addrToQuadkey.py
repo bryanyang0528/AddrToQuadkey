@@ -1,29 +1,61 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import quadkey 
 from geocodequery import GeocodeQuery
 
 
 class AddrToQuadkey:
 
-	def __init__(self, input):
-		self.input = input
+	def __init__(self):
+		#self.input = input
+		pass
 
 	def read_csv(self, input, sep = ','):
-		self.input = []
+		df = []
+		
 		with open(input) as f:
-			lines = f.readlines()
+			lines = f.readlines()	
+			
 			for line in lines:
-				
+				row = []
+				items = line.split(sep)
+
+				for item in items:
+					row.append(item.decode('utf-8'))
+
+				df.append(row)
+
+		return df
+
+	def toQuadkey(self, df, col=2, level=15, geo = 'N'):
+		newDf = []
+
+		for row in df:
+			newRow = row
+			gq = GeocodeQuery("zh-tw", "tw")
+			gq.get_geocode(row[col-1].encode('utf-8'))
+			lat = gq.get_lat()
+			lng = gq.get_lng()
+			qk = quadkey.from_geo((lat, lng), level)
+			newRow.append(qk.key)
+			if (geo == 'Y'):
+				newRow.extend([lat, lng]) 
+
+			newDf.append(newRow)
+
+		return newDf
 
 
-	def toQuadkey(self, export, sep = ',', level = 15):
+	def toQuadkey_(self, export, sep = ',', level = 15):
 		toFile = open(export,'w')
 
 		with open(self.input) as f:
 			lines = f.readlines()
+
 			for line in lines:
 				name = line.split(sep)[0]
 				addr = line.split(sep)[1]
-
 				gq = GeocodeQuery("zh-tw", "tw")
 				gq.get_geocode(addr)
 				lat = gq.get_lat()
@@ -31,6 +63,3 @@ class AddrToQuadkey:
 				qk = quadkey.from_geo((lat, lng), level)
 				toFile.write(name + "," + addr + "," + str(lat) + "," + str(lng) + "," + str(qk) + "\n")
 		toFile.close()
-
-
-
