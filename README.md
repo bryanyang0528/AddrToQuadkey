@@ -1,7 +1,7 @@
 # AddrToQuadkey
 Transfer address to quadkey
 
-### thanks to `https://github.com/buckheroux/QuadKey`
+### thanks to [quadkey](https://github.com/buckheroux/QuadKey)
 
 ####example data (test/addrList.csv)
 ```
